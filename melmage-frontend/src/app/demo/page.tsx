@@ -20,9 +20,7 @@ interface LayerData {
   values: number[][];
 }
 
-interface VisualizationData {
-  [layerName: string]: LayerData;
-}
+type VisualizationData = Record<string, LayerData>;
 
 interface WaveformData {
   values: number[];
@@ -156,7 +154,7 @@ export default function DemoPage() {
           throw new Error(`API error ${response.statusText}`);
         }
 
-        const data: ApiResponse = await response.json();
+        const data = await response.json() as ApiResponse;
         setVizData(data);
       } catch (err) {
         setError(
