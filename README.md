@@ -328,7 +328,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Vedant Jayesh Oza**
 - GitHub: [@Vedant-Jayesh-Oza](https://github.com/Vedant-Jayesh-Oza)
-- Email: your-email@example.com
+- Email: vedantoza1313@gmail.com
 
 ---
 
