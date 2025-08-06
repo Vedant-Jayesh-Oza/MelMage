@@ -10,7 +10,7 @@
 
 ## Demo
 
-https://github.com/user-attachments/assets/demo.mov
+https://github.com/user-attachments/assets/fcc4a563-bc20-4c5e-963b-7ec52dee5fb6
 
 *Watch MelMage classify environmental sounds and visualize what the neural network "sees" at each layer*
 
