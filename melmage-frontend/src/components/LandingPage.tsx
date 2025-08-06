@@ -27,7 +27,7 @@ const LandingPage = () => {
     {
       icon: "🎵",
       title: "Real-time Classification",
-      description: "Upload any WAV file and get instant predictions with complete processing transparency.",
+      description: "Upload a WAV file and get top-3 predictions within 100ms using a serverless GPU-powered inference pipeline.",
     },
     {
       icon: "⚡",
@@ -37,12 +37,12 @@ const LandingPage = () => {
     {
       icon: "📊",
       title: "Complete Transparency",
-      description: "From raw waveform to final prediction - every step of the AI pipeline is visualized.",
+      description: "From raw waveform → Mel-Spectrogram → CNN feature maps → Final prediction. Visualized via a custom React dashboard.",
     },
     {
       icon: "🎨",
       title: "Interactive Dashboard",
-      description: "Next.js frontend with live visualizations, charts, and intuitive user experience.",
+      description: "Built with Next.js + Tailwind CSS. Displays waveform, spectrogram, and per-layer feature maps to explore how audio signals transform across layers.",
     },
   ];
 
@@ -56,8 +56,6 @@ const LandingPage = () => {
     "Infrastructure": [
       { name: "Modal Labs", desc: "Serverless GPU compute" },
       { name: "FastAPI", desc: "High-performance API" },
-      { name: "Docker", desc: "Containerized deployment" },
-      { name: "PostgreSQL", desc: "Data persistence" },
     ],
     "Frontend": [
       { name: "Next.js", desc: "React framework" },
@@ -341,6 +339,113 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Model Internals */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-purple-600">Model Internals</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Custom ResNet-inspired architecture built from scratch in PyTorch. Every layer designed for optimal audio feature extraction.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {[
+              { title: "Residual Blocks", value: "3-4-6-3", desc: "Layer distribution (like ResNet34)" },
+              { title: "Conv Layers", value: "~17", desc: "Total convolutional operations. Each residual block contains 2 Conv2d layers" },
+              { title: "Parameters", value: "~23M", desc: "Trainable model weights" },
+              { title: "Feature Maps", value: "5 depths", desc: "Captured at conv1, layer1-4" },
+            ].map((stat, index) => (
+              <Card key={index} className="text-center p-6 border-0 shadow-md">
+                <div className="text-3xl font-bold text-purple-600 mb-2">{stat.value}</div>
+                <div className="text-lg font-semibold text-gray-900 mb-2">{stat.title}</div>
+                <div className="text-sm text-gray-600">{stat.desc}</div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-8">
+                <h3 className="text-xl font-semibold mb-6 text-purple-600 border-l-4 border-purple-600 pl-4">
+                  Architecture Details
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Input Processing</div>
+                      <div className="text-sm text-gray-600">7x7 conv, stride 2, 64 filters → MaxPool</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Residual Layers</div>
+                      <div className="text-sm text-gray-600">Layer1: 64 channels, Layer2: 128, Layer3: 256, Layer4: 512 (with downsampling at start of each layer except Layer1)</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Global Pooling</div>
+                      <div className="text-sm text-gray-600">AdaptiveAvgPool2d → Flatten → Dropout(0.5)</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Classifier</div>
+                      <div className="text-sm text-gray-600">Linear(512 → 50 classes)</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-8">
+                <h3 className="text-xl font-semibold mb-6 text-purple-600 border-l-4 border-purple-600 pl-4">
+                  Training Specifications
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Optimizer</div>
+                      <div className="text-sm text-gray-600">AdamW with weight decay 0.01</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Learning Rate</div>
+                      <div className="text-sm text-gray-600">OneCycleLR: 0.0005 → 0.002 → 0.0005</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Regularization</div>
+                      <div className="text-sm text-gray-600">Dropout(0.5) + Label Smoothing(0.1) + Mixup</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">Data Augmentation</div>
+                      <div className="text-sm text-gray-600">FrequencyMasking + TimeMasking + Mixup</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Tech Stack */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
@@ -379,68 +484,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Target Audience */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Built for <span className="text-purple-600">Everyone</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you&apos;re learning, researching, or building production ML systems, MelMage
-              provides value at every level of expertise.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {targetAudience.map((audience, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-6">
-                    <div className="text-3xl mr-4">{audience.icon}</div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900">{audience.title}</h3>
-                      <p className="text-purple-600 font-medium">{audience.subtitle}</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{audience.description}</p>
-                  <ul className="space-y-2">
-                    {audience.points.map((point, i) => (
-                      <li key={i} className="flex items-center text-sm text-gray-600">
-                        <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Educational Impact */}
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-12 text-center">
-              <h3 className="text-2xl font-bold mb-6 text-gray-900">Educational Impact</h3>
-              <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-                MelMage makes complex AI concepts accessible through visualization, helping bridge the
-                gap between theoretical knowledge and practical understanding.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                  { title: "Visual", desc: "Learning through interactive visualization", color: "purple" },
-                  { title: "Practical", desc: "Real-world audio classification tasks", color: "blue" },
-                  { title: "Open", desc: "Complete transparency and source access", color: "green" },
-                ].map((impact, i) => (
-                  <div key={i} className="text-center">
-                    <div className={`text-2xl font-bold mb-2 text-${impact.color}-600`}>{impact.title}</div>
-                    <p className="text-gray-600">{impact.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
